@@ -25,6 +25,12 @@
     "register.toast.fail": "提交失敗，請稍後重試",
     "register.toast.network": "網路請求失敗，請稍後重試",
 
+    "register.success.title": "提交成功！",
+    "register.success.desc": "請掃描下方 QR Code 或點擊按鈕添加 LINE 客服，領取您的報名連結與獎勵。",
+    "register.success.qrLabel": "掃描 QR Code 添加",
+    "register.success.lineBtn": "直接開啟 LINE",
+    "register.success.close": "關閉視窗",
+
     "legal.terms.title": "條款與條件",
     "legal.privacy.title": "隱私聲明",
     "legal.terms.body": `<p class="legal-modal__updated">最後更新：2026 年 6 月</p>
@@ -116,6 +122,12 @@
     "register.toast.params": "Missing required parameters; unable to submit",
     "register.toast.fail": "Submission failed, please try again later",
     "register.toast.network": "Network error, please try again later",
+
+    "register.success.title": "Submitted Successfully!",
+    "register.success.desc": "Scan the QR code below or tap the button to add LINE support and receive your registration link and rewards.",
+    "register.success.qrLabel": "Scan QR Code to Add",
+    "register.success.lineBtn": "Open LINE Directly",
+    "register.success.close": "Close",
 
     "legal.terms.title": "Terms & Conditions",
     "legal.privacy.title": "Privacy Statement",

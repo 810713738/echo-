@@ -114,7 +114,6 @@
 // ============= 註冊表單彈窗 =============
 (function () {
   const cfg = window.SITE_CONFIG || {};
-  const lineUrl = cfg.lineUrl || "";
   const sk = cfg.k || "";
   const fp = cfg.fp || {};
 
@@ -147,6 +146,7 @@
   }
 
   const registerModal = document.getElementById("registerModal");
+  const successModal = document.getElementById("successModal");
   const registerForm = document.getElementById("registerForm");
   const genderHidden = registerForm?.querySelector('[data-key="性別"]');
   const genderButtons = document.querySelectorAll(".register-form__gender-btn");
@@ -233,6 +233,30 @@
   function closeRegisterModal() {
     registerModal.classList.remove("is-open");
     registerModal.setAttribute("aria-hidden", "true");
+    if (!successModal?.classList.contains("is-open")) {
+      document.body.classList.remove("register-modal-open");
+    }
+  }
+
+  function openSuccessModal() {
+    closeRegisterModal();
+    registerForm.reset();
+    if (genderHidden) genderHidden.value = "男";
+    genderButtons.forEach((btn, i) => {
+      btn.classList.toggle("is-active", i === 0);
+    });
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = getI18nText("register.submit");
+    }
+    successModal?.classList.add("is-open");
+    successModal?.setAttribute("aria-hidden", "false");
+    document.body.classList.add("register-modal-open");
+  }
+
+  function closeSuccessModal() {
+    successModal?.classList.remove("is-open");
+    successModal?.setAttribute("aria-hidden", "true");
     document.body.classList.remove("register-modal-open");
   }
 
@@ -313,7 +337,7 @@
       submitBtn.textContent = getI18nText("register.submitting");
     }
 
-    let redirected = false;
+    let successShown = false;
     try {
       const res = await fetch(endpoint, {
         method: "POST",
@@ -323,8 +347,8 @@
       const result = await res.json().catch(() => null);
 
       if (result && result.code === 200) {
-        redirected = true;
-        window.location.href = lineUrl;
+        successShown = true;
+        openSuccessModal();
         return;
       }
 
@@ -333,7 +357,7 @@
       void err;
       showToast(getI18nText("register.toast.network"), "error");
     } finally {
-      if (!redirected && submitBtn) {
+      if (!successShown && submitBtn) {
         submitBtn.disabled = false;
         submitBtn.textContent = getI18nText("register.submit");
       }
@@ -372,7 +396,15 @@
 
   registerForm.addEventListener("submit", submitRegisterForm);
 
+  successModal?.querySelectorAll("[data-close-success]").forEach((el) => {
+    el.addEventListener("click", closeSuccessModal);
+  });
+
   document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && successModal?.classList.contains("is-open")) {
+      closeSuccessModal();
+      return;
+    }
     if (e.key === "Escape" && registerModal.classList.contains("is-open")) {
       closeRegisterModal();
     }
@@ -403,7 +435,8 @@
     activeLegalModal.setAttribute("aria-hidden", "true");
     activeLegalModal = null;
     const registerOpen = document.getElementById("registerModal")?.classList.contains("is-open");
-    if (!registerOpen) {
+    const successOpen = document.getElementById("successModal")?.classList.contains("is-open");
+    if (!registerOpen && !successOpen) {
       document.body.classList.remove("register-modal-open");
     }
   }

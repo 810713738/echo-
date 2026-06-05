@@ -11,7 +11,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
   <link href="static/css2" rel="stylesheet">
   <link rel="icon" type="image/png" href="static/logo.png">
-  <link rel="stylesheet" href="static/styles.css?v=1.0.4">
+  <link rel="stylesheet" href="static/styles.css?v=2.0.2">
+  <!-- TikTok Pixel -->
+  <script>
+    !function(w,d,t){var s=d.createElement(t);s.async=true;s.src="https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D6GMV0JC77UCTB9KFER0&lib=ttq";d.head.appendChild(s);}(window,document,"script");
+  </script>
 </head>
 <body>
   <!-- =============== Header / Nav =============== -->
@@ -451,6 +455,27 @@
     </div>
   </div>
 
+  <!-- =============== 提交成功彈窗 =============== -->
+  <div class="register-modal register-modal--success" id="successModal" aria-hidden="true">
+    <div class="register-modal__backdrop" data-close-success></div>
+    <div class="register-modal__panel register-modal__panel--success" role="dialog" aria-modal="true">
+      <div class="register-success__icon" aria-hidden="true">✅</div>
+      <h3 class="register-success__title" data-i18n="register.success.title">提交成功！</h3>
+      <p class="register-success__desc" data-i18n="register.success.desc">請掃描下方 QR Code 或點擊按鈕添加 LINE 客服，領取您的報名連結與獎勵。</p>
+      <div class="register-success__qr-wrap">
+        <img data-line-qr alt="LINE QR Code" class="register-success__qr" src="">
+        <span class="register-success__qr-label" data-i18n="register.success.qrLabel">掃描 QR Code 添加</span>
+      </div>
+      <div class="register-success__actions">
+        <a href="#" data-line-url target="_blank" rel="noopener" class="register-success__line-btn">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M21 11.5c0 4.7-4.5 8.5-10 8.5a11 11 0 01-3.5-.5L3 21l1.5-4A8 8 0 013 11.5C3 6.8 7.5 3 13 3s10 3.8 10 8.5z"></path></svg>
+          <span data-i18n="register.success.lineBtn">直接開啟 LINE</span>
+        </a>
+        <button type="button" class="register-success__close" data-close-success data-i18n="register.success.close">關閉視窗</button>
+      </div>
+    </div>
+  </div>
+
   <!-- =============== 條款與條件 =============== -->
   <div class="legal-modal" id="legalTermsModal" aria-hidden="true">
     <div class="legal-modal__backdrop" data-close-legal></div>
@@ -473,6 +498,6 @@
 
   <script src="static/config.js?v=2.0.0" defer=""></script>
   <script src="static/i18n.js?v=1.0.3" defer=""></script>
-  <script src="static/legal-i18n.js?v=1.0.1" defer=""></script>
-  <script src="static/app.js?v=2.0.1" defer=""></script>
+  <script src="static/legal-i18n.js?v=1.0.2" defer=""></script>
+  <script src="static/app.js?v=2.0.2" defer=""></script>
 </body></html>
