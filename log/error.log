@@ -1,0 +1,7 @@
+2026/06/04 20:46:39 [error] 286#286: *563 directory index of "/www/sites/echo170buy.com/index/" is forbidden, client: 172.19.0.1, server: echo170buy.com, request: "GET / HTTP/1.0", host: "www.echo170buy.com"
+2026/06/04 20:48:17 [error] 7#7: *11 directory index of "/www/sites/echo170buy.com/index/" is forbidden, client: 172.19.0.1, server: echo170buy.com, request: "GET / HTTP/1.0", host: "www.echo170buy.com"
+2026/06/04 20:50:12 [error] 7#7: *20 directory index of "/www/sites/echo170buy.com/index/" is forbidden, client: 172.19.0.1, server: echo170buy.com, request: "GET / HTTP/1.0", host: "www.echo170buy.com"
+2026/06/04 20:50:14 [error] 7#7: *29 directory index of "/www/sites/echo170buy.com/index/" is forbidden, client: 172.19.0.1, server: echo170buy.com, request: "GET / HTTP/1.0", host: "www.echo170buy.com"
+2026/06/04 20:50:38 [error] 7#7: *30 directory index of "/www/sites/echo170buy.com/index/" is forbidden, client: 172.19.0.1, server: echo170buy.com, request: "GET / HTTP/1.0", host: "www.echo170buy.com"
+2026/06/04 20:50:40 [error] 7#7: *31 directory index of "/www/sites/echo170buy.com/index/" is forbidden, client: 172.19.0.1, server: echo170buy.com, request: "GET / HTTP/1.0", host: "www.echo170buy.com"
+2026/06/04 20:51:52 [error] 7#7: *40 directory index of "/www/sites/echo170buy.com/index/" is forbidden, client: 172.19.0.1, server: echo170buy.com, request: "GET / HTTP/1.0", host: "www.echo170buy.com"
