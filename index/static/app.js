@@ -1,3 +1,21 @@
+// ============= 站点配置（LINE 链接等） =============
+(function () {
+  const cfg = window.SITE_CONFIG;
+  if (!cfg) return;
+
+  document.querySelectorAll("[data-line-url]").forEach((el) => {
+    el.href = cfg.lineUrl;
+  });
+
+  document.querySelectorAll("[data-line-id]").forEach((el) => {
+    el.textContent = cfg.lineId;
+  });
+
+  document.querySelectorAll("[data-line-qr]").forEach((el) => {
+    el.src = cfg.lineQr;
+  });
+})();
+
 // ============= 語言切換 =============
 (function () {
   const html = document.documentElement;
@@ -18,6 +36,20 @@
       }
     });
 
+    document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+      const key = el.getAttribute("data-i18n-placeholder");
+      if (dict[key] != null) {
+        el.placeholder = dict[key];
+      }
+    });
+
+    document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+      const key = el.getAttribute("data-i18n-aria");
+      if (dict[key] != null) {
+        el.setAttribute("aria-label", dict[key]);
+      }
+    });
+
     if (toggleBtn) {
       const cur = toggleBtn.querySelector(".lang-current");
       const oth = toggleBtn.querySelector(".lang-other");
@@ -31,9 +63,18 @@
     }
   }
 
+  window.getCurrentLang = () => current;
+  window.getI18nText = (key) => {
+    const dict = window.I18N[current];
+    return dict && dict[key] != null ? dict[key] : key;
+  };
+  window.applySiteLang = applyLang;
+
   toggleBtn?.addEventListener("click", () => {
     applyLang(current === "zh" ? "en" : "zh");
   });
+
+  applyLang(current);
 })();
 
 // ============= 滾動時 Header 樣式 =============
@@ -73,24 +114,13 @@
   });
 })();
 
-// ============= LINE QR Code 動態產生 =============
-(function () {
-  const img = document.getElementById("lineQr");
-  if (!img) return;
-  img.src = "./static/20260604-144748.png";
-})();
-
 // ============= 註冊表單彈窗 =============
 (function () {
-  const API_URL = "https://www.echo169buy.com/api/form/submit";
-  const DEFAULT_PARAMS = {
-    advertiser_id: "7591795398541639681",
-    pixel_id: "D6GMV0JC77UCTB9KFER0",
-    page_id: "53af237f",
-  };
+  const cfg = window.SITE_CONFIG || {};
+  const formSubmitUrl = cfg.formSubmitUrl || "";
+  const lineUrl = cfg.lineUrl || "";
 
   const registerModal = document.getElementById("registerModal");
-  const successModal = document.getElementById("successModal");
   const registerForm = document.getElementById("registerForm");
   const genderHidden = registerForm?.querySelector('[data-key="性別"]');
   const genderButtons = document.querySelectorAll(".register-form__gender-btn");
@@ -101,9 +131,9 @@
   function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
     return {
-      advertiser_id: params.get("advertiser_id") || params.get("advertiser") || DEFAULT_PARAMS.advertiser_id,
-      pixel_id: params.get("pixel_id") || params.get("pixel") || DEFAULT_PARAMS.pixel_id,
-      page_id: params.get("page_id") || params.get("page") || DEFAULT_PARAMS.page_id,
+      advertiser_id: params.get("advertiser_id") || params.get("advertiser") || "",
+      pixel_id: params.get("pixel_id") || params.get("pixel") || "",
+      page_id: params.get("page_id") || params.get("page") || "",
       adgroup_id: params.get("adgroup_id") || params.get("adgroup") || "",
     };
   }
@@ -125,21 +155,6 @@
   function closeRegisterModal() {
     registerModal.classList.remove("is-open");
     registerModal.setAttribute("aria-hidden", "true");
-    if (!successModal?.classList.contains("is-open")) {
-      document.body.classList.remove("register-modal-open");
-    }
-  }
-
-  function openSuccessModal() {
-    closeRegisterModal();
-    successModal?.classList.add("is-open");
-    successModal?.setAttribute("aria-hidden", "false");
-    document.body.classList.add("register-modal-open");
-  }
-
-  function closeSuccessModal() {
-    successModal?.classList.remove("is-open");
-    successModal?.setAttribute("aria-hidden", "true");
     document.body.classList.remove("register-modal-open");
   }
 
@@ -177,18 +192,19 @@
 
     const { formData, missingFields } = collectFormData();
     if (missingFields.length > 0) {
-      showToast(`請填寫必填字段：${missingFields.join("、")}`, "error");
+      const sep = getCurrentLang() === "zh" ? "、" : ", ";
+      showToast(`${getI18nText("register.toast.required")}${missingFields.join(sep)}`, "error");
       return;
     }
 
     if (Object.keys(formData).length === 0) {
-      showToast("請至少填寫一項資料", "error");
+      showToast(getI18nText("register.toast.empty"), "error");
       return;
     }
 
     const params = getUrlParams();
-    if (!params.page_id || !params.advertiser_id || !params.pixel_id) {
-      showToast("缺少必要參數，無法提交", "error");
+    if (!formSubmitUrl || !params.page_id || !params.advertiser_id || !params.pixel_id) {
+      showToast(getI18nText("register.toast.params"), "error");
       return;
     }
 
@@ -202,35 +218,20 @@
 
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.textContent = "提交中…";
+      submitBtn.textContent = getI18nText("register.submitting");
     }
 
     try {
-      const res = await fetch(API_URL, {
+      await fetch(formSubmitUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const result = await res.json();
-
-      if (result.code === 200) {
-        registerForm.reset();
-        if (genderHidden) genderHidden.value = "男";
-        genderButtons.forEach((btn, i) => {
-          btn.classList.toggle("is-active", i === 0);
-        });
-        openSuccessModal();
-      } else {
-        showToast(result.msg || "表單提交失敗", "error");
-      }
     } catch (err) {
-      showToast("網路請求失敗，請稍後重試", "error");
-    } finally {
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "填寫資料點擊獲取報名連結";
-      }
+      // 忽略錯誤，仍跳轉 LINE
     }
+
+    window.location.href = lineUrl;
   }
 
   document.querySelectorAll(".js-open-register-modal").forEach((el) => {
@@ -244,8 +245,15 @@
     el.addEventListener("click", closeRegisterModal);
   });
 
-  successModal?.querySelectorAll("[data-close-success]").forEach((el) => {
-    el.addEventListener("click", closeSuccessModal);
+  registerModal.querySelector(".js-scroll-to-line-qr")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    closeRegisterModal();
+    const qrSection = document.getElementById("line-qr");
+    if (qrSection) {
+      qrSection.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+    }
   });
 
   genderButtons.forEach((btn) => {
@@ -259,8 +267,55 @@
   registerForm.addEventListener("submit", submitRegisterForm);
 
   document.addEventListener("keydown", (e) => {
-    if (e.key !== "Escape") return;
-    if (registerModal.classList.contains("is-open")) closeRegisterModal();
-    if (successModal?.classList.contains("is-open")) closeSuccessModal();
+    if (e.key === "Escape" && registerModal.classList.contains("is-open")) {
+      closeRegisterModal();
+    }
+  });
+})();
+
+// ============= 條款 / 隱私聲明彈窗 =============
+(function () {
+  const legalModals = {
+    terms: document.getElementById("legalTermsModal"),
+    privacy: document.getElementById("legalPrivacyModal"),
+  };
+
+  let activeLegalModal = null;
+
+  function openLegalModal(type) {
+    const modal = legalModals[type];
+    if (!modal) return;
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("register-modal-open");
+    activeLegalModal = modal;
+  }
+
+  function closeLegalModal() {
+    if (!activeLegalModal) return;
+    activeLegalModal.classList.remove("is-open");
+    activeLegalModal.setAttribute("aria-hidden", "true");
+    activeLegalModal = null;
+    const registerOpen = document.getElementById("registerModal")?.classList.contains("is-open");
+    if (!registerOpen) {
+      document.body.classList.remove("register-modal-open");
+    }
+  }
+
+  document.querySelectorAll("[data-open-legal]").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      openLegalModal(el.getAttribute("data-open-legal"));
+    });
+  });
+
+  document.querySelectorAll("[data-close-legal]").forEach((el) => {
+    el.addEventListener("click", closeLegalModal);
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && activeLegalModal) {
+      closeLegalModal();
+    }
   });
 })();

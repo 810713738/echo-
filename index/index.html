@@ -17,7 +17,8 @@
 
   <link rel="icon" type="image/png" href="static/logo.png">
 
-  <link rel="stylesheet" href="static/styles.css">
+  <!-- 更新 static 資源後請同步遞增 ?v= 版本號（含 config.js） -->
+  <link rel="stylesheet" href="static/styles.css?v=1.0.4">
 </head>
 <body>
   <!-- =============== Header / Nav =============== -->
@@ -175,7 +176,7 @@
               <li><span data-i18n="welcome.b3">Day 3 節點獎勵</span><strong>NT$800</strong></li>
               <li><span data-i18n="welcome.b4">Day 7 節點獎勵</span><strong>NT$1,200</strong></li>
             </ul>
-            <a href="https://lin.ee/N9oAm0s" target="_blank" rel="noopener" class="btn btn-amber btn-lg btn-block" data-i18n="welcome.cta">立即領取新人禮</a>
+            <button type="button" class="btn btn-amber btn-lg btn-block js-open-register-modal" data-i18n="welcome.cta">立即領取新人禮</button>
           </div>
 
           <ol class="day-list">
@@ -303,7 +304,7 @@
           <div class="eyebrow" data-i18n="faq.eyebrow">常見問題</div>
           <h2 class="section-title" data-i18n="faq.title">你想問的，<br>我們先說清楚</h2>
           <p class="section-lede" data-i18n="faq.lede">仍有疑問？歡迎加 LINE 直接與專員聊聊。</p>
-          <a href="https://lin.ee/N9oAm0s" target="_blank" rel="noopener" class="btn btn-ghost faq-line-btn" data-i18n="faq.lineBtn">加 LINE 詢問 →</a>
+          <a href="#" data-line-url target="_blank" rel="noopener" class="btn btn-ghost faq-line-btn" data-i18n="faq.lineBtn">加 LINE 詢問 →</a>
         </div>
 
         <div class="faq-list">
@@ -351,7 +352,7 @@
                 </span>
                 <div>
                   <div class="contact-label" data-i18n="contact.lineLabel">官方 LINE</div>
-                  <a href="https://lin.ee/N9oAm0s" target="_blank" rel="noopener">@235rjqfy</a>
+                  <a href="#" data-line-url target="_blank" rel="noopener" data-line-id></a>
                 </div>
               </li>
               <li>
@@ -374,20 +375,20 @@
               </li>
             </ul>
 
-            <a href="https://lin.ee/N9oAm0s" target="_blank" rel="noopener" class="btn btn-amber btn-lg contact-line-cta">
+            <button type="button" class="btn btn-amber btn-lg contact-line-cta js-open-register-modal">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M21 11.5c0 4.7-4.5 8.5-10 8.5a11 11 0 01-3.5-.5L3 21l1.5-4A8 8 0 013 11.5C3 6.8 7.5 3 13 3s10 3.8 10 8.5z"></path></svg>
               <span data-i18n="contact.lineCta">加好友領 NT$1,500 體驗金</span>
-            </a>
+            </button>
           </div>
 
           <div class="contact-right">
-            <div class="qr-wrap">
+            <div class="qr-wrap" id="line-qr">
               <div class="qr-box">
-                <img id="lineQr" alt="LINE QR Code" src="static/20260604-144748.png">
+                <img id="lineQr" data-line-qr alt="LINE QR Code" src="">
               </div>
               <div class="qr-text">
                 <div class="qr-title" data-i18n="contact.qrTitle">掃描 QR Code 加入</div>
-                <div class="qr-id">LINE ID：<strong>@235rjqfy</strong></div>
+                <div class="qr-id">LINE ID：<strong data-line-id>@235rjqfy</strong></div>
                 <p data-i18n="contact.qrNote">手機開啟相機掃描，或直接在 LINE 搜尋 ID 加入官方帳號。</p>
               </div>
             </div>
@@ -420,61 +421,65 @@
   <div class="register-modal" id="registerModal" aria-hidden="true">
     <div class="register-modal__backdrop" data-close-modal></div>
     <div class="register-modal__panel" role="dialog" aria-modal="true" aria-labelledby="registerModalTitle">
-      <button type="button" class="register-modal__close" data-close-modal aria-label="關閉">×</button>
+      <button type="button" class="register-modal__close" data-close-modal data-i18n-aria="common.close" aria-label="關閉">×</button>
       <div class="register-modal__logo">
         <img src="static/logo.png" alt="好評五星">
       </div>
       <form id="registerForm" class="register-form" novalidate>
         <div class="register-form__row">
-          <input type="text" placeholder="名字" class="register-form__input" data-key="姓名" name="姓名" data-required="true" autocomplete="name">
-          <input type="number" placeholder="年齡" class="register-form__input register-form__input--short" data-key="您的年齡" name="您的年齡" min="1" max="120" autocomplete="off">
+          <input type="text" class="register-form__input" data-i18n-placeholder="register.name" data-key="姓名" name="姓名" data-required="true" autocomplete="name">
+          <input type="number" class="register-form__input register-form__input--short" data-i18n-placeholder="register.age" data-key="您的年齡" name="您的年齡" min="1" max="120" autocomplete="off">
         </div>
         <div class="register-form__row">
-          <input type="tel" placeholder="電話號碼" class="register-form__input" data-key="電話" name="電話" autocomplete="tel">
-          <input type="text" placeholder="LINE ID" class="register-form__input register-form__input--short" data-key="您的LINE ID" name="您的LINE ID" autocomplete="off">
+          <input type="tel" class="register-form__input" data-i18n-placeholder="register.phone" data-key="電話" name="電話" autocomplete="tel">
+          <input type="text" class="register-form__input register-form__input--short" data-i18n-placeholder="register.lineId" data-key="您的LINE ID" name="您的LINE ID" autocomplete="off">
         </div>
-        <input type="email" placeholder="電子郵件地址" class="register-form__input register-form__input--full" data-key="郵箱" name="郵箱" autocomplete="email">
+        <input type="email" class="register-form__input register-form__input--full" data-i18n-placeholder="register.email" data-key="郵箱" name="郵箱" autocomplete="email">
         <input type="hidden" data-key="性別" name="性別" value="男">
         <div class="register-form__gender" id="genderSelection">
-          <button type="button" class="register-form__gender-btn is-active" data-gender="男">男</button>
-          <button type="button" class="register-form__gender-btn" data-gender="女">女</button>
-          <button type="button" class="register-form__gender-btn" data-gender="其他">其他</button>
+          <button type="button" class="register-form__gender-btn is-active" data-gender="男" data-i18n="register.gender.male">男</button>
+          <button type="button" class="register-form__gender-btn" data-gender="女" data-i18n="register.gender.female">女</button>
+          <button type="button" class="register-form__gender-btn" data-gender="其他" data-i18n="register.gender.other">其他</button>
         </div>
         <div class="register-form__actions">
-          <button type="submit" class="register-form__submit" data-action="form-submit">填寫資料點擊獲取報名連結</button>
-          <a href="https://lin.ee/N9oAm0s" target="_blank" rel="noopener" class="register-form__line">
+          <button type="submit" class="register-form__submit" data-action="form-submit" data-i18n="register.submit">填寫資料點擊獲取報名連結</button>
+          <button type="button" class="register-form__line js-scroll-to-line-qr">
             <span class="register-form__line-text">
-              <span class="register-form__line-label">LINE 客服</span>
-              <span class="register-form__line-title">LINE 客服</span>
+              <span class="register-form__line-label" data-i18n="register.lineLabel">LINE 客服</span>
+              <span class="register-form__line-title" data-i18n="register.lineTitle">LINE 客服</span>
             </span>
-            <img src="static/20260604-144748.png" alt="LINE QR" class="register-form__line-qr">
-          </a>
+            <img data-line-qr alt="LINE QR" class="register-form__line-qr" src="">
+          </button>
         </div>
-        <p class="register-form__terms">註冊即表示您同意我們的 <span class="register-form__terms-link">條款與條件</span> 和 <span class="register-form__terms-link">隱私聲明</span>。</p>
+        <p class="register-form__terms">
+          <span data-i18n="register.termsPrefix">註冊即表示您同意我們的 </span><button type="button" class="register-form__terms-link" data-open-legal="terms" data-i18n="register.termsLink">條款與條件</button><span data-i18n="register.termsAnd"> 和 </span><button type="button" class="register-form__terms-link" data-open-legal="privacy" data-i18n="register.privacyLink">隱私聲明</button><span data-i18n="register.termsSuffix">。</span>
+        </p>
       </form>
     </div>
   </div>
 
-  <!-- =============== 提交成功彈窗 =============== -->
-  <div class="register-modal register-modal--success" id="successModal" aria-hidden="true">
-    <div class="register-modal__backdrop" data-close-success></div>
-    <div class="register-modal__panel register-modal__panel--success" role="dialog" aria-modal="true">
-      <div class="register-success__icon" aria-hidden="true">✅</div>
-      <h3 class="register-success__title">提交成功！</h3>
-      <p class="register-success__desc">請掃描下方 QR Code 或點擊按鈕添加 LINE 客服，領取您的報名連結與獎勵。</p>
-      <div class="register-success__qr-wrap">
-        <img src="static/20260604-144748.png" alt="LINE QR Code" class="register-success__qr">
-        <span class="register-success__qr-label">掃描 QR Code 添加</span>
-      </div>
-      <div class="register-success__actions">
-        <a href="https://lin.ee/N9oAm0s" target="_blank" rel="noopener" class="register-form__line register-form__line--block">
-          <span class="register-form__line-title">直接開啟 LINE</span>
-        </a>
-        <button type="button" class="register-success__close" data-close-success>關閉視窗</button>
-      </div>
+  <!-- =============== 條款與條件 =============== -->
+  <div class="legal-modal" id="legalTermsModal" aria-hidden="true">
+    <div class="legal-modal__backdrop" data-close-legal></div>
+    <div class="legal-modal__panel" role="dialog" aria-modal="true" aria-labelledby="legalTermsTitle">
+      <button type="button" class="legal-modal__close" data-close-legal data-i18n-aria="common.close" aria-label="關閉">×</button>
+      <h2 class="legal-modal__title" id="legalTermsTitle" data-i18n="legal.terms.title">條款與條件</h2>
+      <div class="legal-modal__body" data-i18n="legal.terms.body"></div>
     </div>
   </div>
 
-  <script src="static/i18n.js" defer=""></script>
-  <script src="static/app.js?v=1.01" defer=""></script>
+  <!-- =============== 隱私聲明 =============== -->
+  <div class="legal-modal" id="legalPrivacyModal" aria-hidden="true">
+    <div class="legal-modal__backdrop" data-close-legal></div>
+    <div class="legal-modal__panel" role="dialog" aria-modal="true" aria-labelledby="legalPrivacyTitle">
+      <button type="button" class="legal-modal__close" data-close-legal data-i18n-aria="common.close" aria-label="關閉">×</button>
+      <h2 class="legal-modal__title" id="legalPrivacyTitle" data-i18n="legal.privacy.title">隱私聲明</h2>
+      <div class="legal-modal__body" data-i18n="legal.privacy.body"></div>
+    </div>
+  </div>
+
+  <script src="static/config.js?v=1.0.2" defer=""></script>
+  <script src="static/i18n.js?v=1.0.3" defer=""></script>
+  <script src="static/legal-i18n.js?v=1.0.0" defer=""></script>
+  <script src="static/app.js?v=1.0.9" defer=""></script>
 </body></html>
