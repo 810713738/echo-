@@ -46,7 +46,7 @@
           <span class="lang-sep">／</span>
           <span class="lang-other">EN</span>
         </button>
-        <a href="https://lin.ee/N9oAm0s" target="_blank" rel="noopener" class="btn btn-primary nav-cta" data-i18n="nav.cta">立即加入</a>
+        <button type="button" class="btn btn-primary nav-cta js-open-register-modal" data-i18n="nav.cta">立即加入</button>
       </div>
 
       <button class="menu-toggle" id="menuToggle" aria-label="開啟選單">
@@ -87,7 +87,7 @@
         </p>
 
         <div class="hero-actions">
-          <a href="https://lin.ee/N9oAm0s" target="_blank" rel="noopener" class="btn btn-primary btn-lg" data-i18n="hero.ctaPrimary">立即加入 LINE</a>
+          <button type="button" class="btn btn-primary btn-lg js-open-register-modal" data-i18n="hero.ctaPrimary">立即加入 LINE</button>
           <a href="#welcome" class="btn btn-ghost btn-lg" data-i18n="hero.ctaSecondary">查看新人禮 →</a>
         </div>
 
@@ -416,6 +416,65 @@
       <p class="footer-copy">© 2026 好評五星 HaoPing 5-Star. <span data-i18n="footer.rights">All rights reserved.</span></p>
     </div>
   </footer>
+  <!-- =============== 註冊表單彈窗 =============== -->
+  <div class="register-modal" id="registerModal" aria-hidden="true">
+    <div class="register-modal__backdrop" data-close-modal></div>
+    <div class="register-modal__panel" role="dialog" aria-modal="true" aria-labelledby="registerModalTitle">
+      <button type="button" class="register-modal__close" data-close-modal aria-label="關閉">×</button>
+      <div class="register-modal__logo">
+        <img src="static/logo.png" alt="好評五星">
+      </div>
+      <form id="registerForm" class="register-form" novalidate>
+        <div class="register-form__row">
+          <input type="text" placeholder="名字" class="register-form__input" data-key="姓名" name="姓名" data-required="true" autocomplete="name">
+          <input type="number" placeholder="年齡" class="register-form__input register-form__input--short" data-key="您的年齡" name="您的年齡" min="1" max="120" autocomplete="off">
+        </div>
+        <div class="register-form__row">
+          <input type="tel" placeholder="電話號碼" class="register-form__input" data-key="電話" name="電話" autocomplete="tel">
+          <input type="text" placeholder="LINE ID" class="register-form__input register-form__input--short" data-key="您的LINE ID" name="您的LINE ID" autocomplete="off">
+        </div>
+        <input type="email" placeholder="電子郵件地址" class="register-form__input register-form__input--full" data-key="郵箱" name="郵箱" autocomplete="email">
+        <input type="hidden" data-key="性別" name="性別" value="男">
+        <div class="register-form__gender" id="genderSelection">
+          <button type="button" class="register-form__gender-btn is-active" data-gender="男">男</button>
+          <button type="button" class="register-form__gender-btn" data-gender="女">女</button>
+          <button type="button" class="register-form__gender-btn" data-gender="其他">其他</button>
+        </div>
+        <div class="register-form__actions">
+          <button type="submit" class="register-form__submit" data-action="form-submit">填寫資料點擊獲取報名連結</button>
+          <a href="https://lin.ee/N9oAm0s" target="_blank" rel="noopener" class="register-form__line">
+            <span class="register-form__line-text">
+              <span class="register-form__line-label">LINE 客服</span>
+              <span class="register-form__line-title">LINE 客服</span>
+            </span>
+            <img src="static/20260604-144748.png" alt="LINE QR" class="register-form__line-qr">
+          </a>
+        </div>
+        <p class="register-form__terms">註冊即表示您同意我們的 <span class="register-form__terms-link">條款與條件</span> 和 <span class="register-form__terms-link">隱私聲明</span>。</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- =============== 提交成功彈窗 =============== -->
+  <div class="register-modal register-modal--success" id="successModal" aria-hidden="true">
+    <div class="register-modal__backdrop" data-close-success></div>
+    <div class="register-modal__panel register-modal__panel--success" role="dialog" aria-modal="true">
+      <div class="register-success__icon" aria-hidden="true">✅</div>
+      <h3 class="register-success__title">提交成功！</h3>
+      <p class="register-success__desc">請掃描下方 QR Code 或點擊按鈕添加 LINE 客服，領取您的報名連結與獎勵。</p>
+      <div class="register-success__qr-wrap">
+        <img src="static/20260604-144748.png" alt="LINE QR Code" class="register-success__qr">
+        <span class="register-success__qr-label">掃描 QR Code 添加</span>
+      </div>
+      <div class="register-success__actions">
+        <a href="https://lin.ee/N9oAm0s" target="_blank" rel="noopener" class="register-form__line register-form__line--block">
+          <span class="register-form__line-title">直接開啟 LINE</span>
+        </a>
+        <button type="button" class="register-success__close" data-close-success>關閉視窗</button>
+      </div>
+    </div>
+  </div>
+
   <script src="static/i18n.js" defer=""></script>
   <script src="static/app.js" defer=""></script>
 </body></html>
