@@ -22,6 +22,8 @@
     "register.toast.required": "請填寫必填字段：",
     "register.toast.empty": "請至少填寫一項資料",
     "register.toast.params": "缺少必要參數，無法提交",
+    "register.toast.fail": "提交失敗，請稍後重試",
+    "register.toast.network": "網路請求失敗，請稍後重試",
 
     "legal.terms.title": "條款與條件",
     "legal.privacy.title": "隱私聲明",
@@ -112,6 +114,8 @@
     "register.toast.required": "Please fill in required fields: ",
     "register.toast.empty": "Please fill in at least one field",
     "register.toast.params": "Missing required parameters; unable to submit",
+    "register.toast.fail": "Submission failed, please try again later",
+    "register.toast.network": "Network error, please try again later",
 
     "legal.terms.title": "Terms & Conditions",
     "legal.privacy.title": "Privacy Statement",

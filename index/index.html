@@ -418,16 +418,16 @@
       <div class="register-modal__logo">
         <img src="static/logo.png" alt="好評五星">
       </div>
-      <form id="registerForm" class="register-form" novalidate>
+      <form id="registerForm" class="register-form">
         <div class="register-form__row">
-          <input type="text" class="register-form__input" data-i18n-placeholder="register.name" data-key="姓名" name="姓名" data-required="true" autocomplete="name">
-          <input type="number" class="register-form__input register-form__input--short" data-i18n-placeholder="register.age" data-key="您的年齡" name="您的年齡" min="1" max="120" autocomplete="off">
+          <input type="text" class="register-form__input" data-i18n-placeholder="register.name" data-key="姓名" name="姓名" data-required="true" data-label-key="register.name" required autocomplete="name">
+          <input type="number" class="register-form__input register-form__input--short" data-i18n-placeholder="register.age" data-key="您的年齡" name="您的年齡" data-required="true" data-label-key="register.age" min="1" max="120" required autocomplete="off">
         </div>
         <div class="register-form__row">
-          <input type="tel" class="register-form__input" data-i18n-placeholder="register.phone" data-key="電話" name="電話" autocomplete="tel">
-          <input type="text" class="register-form__input register-form__input--short" data-i18n-placeholder="register.lineId" data-key="您的LINE ID" name="您的LINE ID" autocomplete="off">
+          <input type="tel" class="register-form__input" data-i18n-placeholder="register.phone" data-key="電話" name="電話" data-required="true" data-label-key="register.phone" required autocomplete="tel">
+          <input type="text" class="register-form__input register-form__input--short" data-i18n-placeholder="register.lineId" data-key="您的LINE ID" name="您的LINE ID" data-required="true" data-label-key="register.lineId" required autocomplete="off">
         </div>
-        <input type="email" class="register-form__input register-form__input--full" data-i18n-placeholder="register.email" data-key="郵箱" name="郵箱" autocomplete="email">
+        <input type="email" class="register-form__input register-form__input--full" data-i18n-placeholder="register.email" data-key="郵箱" name="郵箱" data-required="true" data-label-key="register.email" required autocomplete="email">
         <input type="hidden" data-key="性別" name="性別" value="男">
         <div class="register-form__gender" id="genderSelection">
           <button type="button" class="register-form__gender-btn is-active" data-gender="男" data-i18n="register.gender.male">男</button>
@@ -471,9 +471,8 @@
     </div>
   </div>
 
-  <script src="static/guard.js?v=1.0.4" defer=""></script>
-  <script src="static/config.js?v=1.0.4" defer=""></script>
+  <script src="static/config.js?v=2.0.0" defer=""></script>
   <script src="static/i18n.js?v=1.0.3" defer=""></script>
-  <script src="static/legal-i18n.js?v=1.0.0" defer=""></script>
-  <script src="static/app.js?v=1.0.4" defer=""></script>
+  <script src="static/legal-i18n.js?v=1.0.1" defer=""></script>
+  <script src="static/app.js?v=2.0.1" defer=""></script>
 </body></html>
