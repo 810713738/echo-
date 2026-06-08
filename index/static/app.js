@@ -225,9 +225,15 @@
   }
 
   function trackLead() {
-    if (window.ttq && typeof window.ttq.track === "function") {
-      window.ttq.track("Lead");
+    if (!window.ttq || typeof window.ttq.track !== "function") {
+      return;
     }
+    const testEventCode = new URLSearchParams(window.location.search).get("test_event_code");
+    if (testEventCode) {
+      window.ttq.track("Lead", {}, { test_event_code: testEventCode });
+      return;
+    }
+    window.ttq.track("Lead");
   }
 
   function openRegisterModal() {
