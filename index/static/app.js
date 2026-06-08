@@ -224,6 +224,12 @@
     setTimeout(() => toast.remove(), 3000);
   }
 
+  function trackLead() {
+    if (window.ttq && typeof window.ttq.track === "function") {
+      window.ttq.track("Lead");
+    }
+  }
+
   function openRegisterModal() {
     registerModal.classList.add("is-open");
     registerModal.setAttribute("aria-hidden", "false");
@@ -348,6 +354,7 @@
 
       if (result && result.code === 200) {
         successShown = true;
+        trackLead();
         openSuccessModal();
         return;
       }
