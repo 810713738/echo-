@@ -230,10 +230,10 @@
     }
     const testEventCode = new URLSearchParams(window.location.search).get("test_event_code");
     if (testEventCode) {
-      window.ttq.track("Lead", {}, { test_event_code: testEventCode });
+      window.ttq.track("SubmitApplication", {}, { test_event_code: testEventCode });
       return;
     }
-    window.ttq.track("Lead");
+    window.ttq.track('SubmitApplication')
   }
 
   function openRegisterModal() {
