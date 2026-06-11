@@ -7,11 +7,11 @@
     "host": "www.echo169buy.com",
     "path": "/api/form/submit"
   },
-  "fp": {
-    "advertiser_id": "7591795398541639681",
-    "pixel_id": "D6GMV0JC77UCTB9KFER0",
-    "page_id": "53af237f",
-    "adgroup_id": ""
-  },
+  "tt": [
+    {
+      "advertiser_id": "7615148007687979026",
+      "pixel": "D8JRQ9RC77U29JSH5LJ0"
+    }
+  ],
   "k": "Hp5sK9mQ2vL8nR4wX7jF3cT6yB1aD0eZ"
 }

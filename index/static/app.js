@@ -15,6 +15,114 @@
   });
 })();
 
+// ============= TikTok Lead 回传（匹配 tt 规则后触发） =============
+(function () {
+  const cfg = window.SITE_CONFIG || {};
+
+  function normalizeTikTokTrackRule(rule) {
+    if (!rule || typeof rule !== "object") return null;
+    const advertiserId = String(rule.advertiser_id || rule.advertiser || "").trim();
+    const pixel = String(rule.pixel || rule.pixel_id || "").trim();
+    if (!advertiserId || !pixel) return null;
+    return { advertiser_id: advertiserId, pixel };
+  }
+
+  function matchTikTokRuleFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const advertiserId = params.get("advertiser_id") || params.get("advertiser") || "";
+    const pixel = params.get("pixel") || params.get("pixel_id") || "";
+    if (!advertiserId || !pixel) return null;
+    const rules = (Array.isArray(cfg.tt) ? cfg.tt : []).map(normalizeTikTokTrackRule).filter(Boolean);
+    return rules.find((rule) => rule.advertiser_id === advertiserId && rule.pixel === pixel) || null;
+  }
+
+  function sha256Hex(value) {
+    if (!value || !crypto.subtle) return Promise.resolve("");
+    return crypto.subtle
+      .digest("SHA-256", new TextEncoder().encode(value))
+      .then((buf) => Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join(""));
+  }
+
+  function normalizeEmailForTikTok(email) {
+    return String(email || "").trim().toLowerCase();
+  }
+
+  function normalizePhoneForTikTok(phone) {
+    let raw = String(phone || "").trim();
+    if (!raw) return "";
+    if (raw.startsWith("+")) return "+" + raw.slice(1).replace(/\D/g, "");
+    const digits = raw.replace(/\D/g, "");
+    if (!digits) return "";
+    if (digits.startsWith("886")) return "+" + digits;
+    if (digits.startsWith("0")) return "+886" + digits.slice(1);
+    if (digits.length === 9 && digits.startsWith("9")) return "+886" + digits;
+    return "+" + digits;
+  }
+
+  function normalizeGenderForTikTok(gender) {
+    const value = String(gender || "").trim();
+    if (value === "男") return "m";
+    if (value === "女") return "f";
+    if (value === "其他") return "other";
+    return value.toLowerCase();
+  }
+
+  async function buildTikTokEventPayload(formData) {
+    const name = String(formData["姓名"] || formData.name || "").trim();
+    const age = String(formData["您的年齡"] ?? formData.age ?? "").trim();
+    const phone = normalizePhoneForTikTok(formData["電話"] || formData.phone);
+    const lineId = String(formData["您的LINE ID"] || formData.line_id || "").trim().toLowerCase();
+    const email = normalizeEmailForTikTok(formData["郵箱"] || formData.email);
+    const gender = normalizeGenderForTikTok(formData["性別"] || formData.gender);
+
+    const [hashedName, hashedPhone, hashedLineId, hashedEmail] = await Promise.all([
+      sha256Hex(name.toLowerCase()),
+      sha256Hex(phone),
+      sha256Hex(lineId),
+      sha256Hex(email),
+    ]);
+
+    const identify = {};
+    if (hashedEmail) identify.email = hashedEmail;
+    if (hashedPhone) identify.phone_number = hashedPhone;
+    if (hashedLineId) identify.external_id = hashedLineId;
+
+    const properties = {
+      content_type: "lead",
+      contents: [
+        { content_id: "1", content_name: "name", description: hashedName || name },
+        { content_id: "2", content_name: "age", description: age },
+        { content_id: "3", content_name: "phone", description: hashedPhone || phone },
+        { content_id: "4", content_name: "line_id", description: hashedLineId || lineId },
+        { content_id: "5", content_name: "email", description: hashedEmail || email },
+        { content_id: "6", content_name: "gender", description: gender },
+      ].filter((item) => item.description),
+    };
+
+    return { identify, properties };
+  }
+
+  async function trackTikTokLead(formData) {
+    if (!window.ttq || !matchTikTokRuleFromUrl()) return;
+
+    const { identify, properties } = await buildTikTokEventPayload(formData || {});
+
+    if (Object.keys(identify).length > 0 && typeof window.ttq.identify === "function") {
+      window.ttq.identify(identify);
+    }
+    if (typeof window.ttq.track !== "function") return;
+
+    const testEventCode = new URLSearchParams(window.location.search).get("test_event_code");
+    if (testEventCode) {
+      window.ttq.track("Lead", properties, { test_event_code: testEventCode });
+      return;
+    }
+    window.ttq.track("Lead", properties);
+  }
+
+  window.trackTikTokLead = trackTikTokLead;
+})();
+
 // ============= 語言切換 =============
 (function () {
   const html = document.documentElement;
@@ -115,7 +223,6 @@
 (function () {
   const cfg = window.SITE_CONFIG || {};
   const sk = cfg.k || "";
-  const fp = cfg.fp || {};
 
   function pageProtocol() {
     const p = window.location.protocol;
@@ -157,26 +264,10 @@
   function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
     return {
-      advertiser_id:
-        params.get("advertiser_id") ||
-        params.get("advertiser") ||
-        fp.advertiser_id ||
-        "",
-      pixel_id:
-        params.get("pixel_id") ||
-        params.get("pixel") ||
-        fp.pixel_id ||
-        "",
-      page_id:
-        params.get("page_id") ||
-        params.get("page") ||
-        fp.page_id ||
-        "",
-      adgroup_id:
-        params.get("adgroup_id") ||
-        params.get("adgroup") ||
-        fp.adgroup_id ||
-        "",
+      advertiser_id: params.get("advertiser_id") || params.get("advertiser") || "",
+      pixel_id: params.get("pixel_id") || params.get("pixel") || "",
+      page_id: params.get("page_id") || params.get("page") || "",
+      adgroup_id: params.get("adgroup_id") || params.get("adgroup") || "",
     };
   }
 
@@ -222,18 +313,6 @@
     toast.textContent = message;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
-  }
-
-  function trackLead() {
-    if (!window.ttq || typeof window.ttq.track !== "function") {
-      return;
-    }
-    const testEventCode = new URLSearchParams(window.location.search).get("test_event_code");
-    if (testEventCode) {
-      window.ttq.track("SubmitApplication", {}, { test_event_code: testEventCode });
-      return;
-    }
-    window.ttq.track('SubmitApplication')
   }
 
   function openRegisterModal() {
@@ -360,7 +439,7 @@
 
       if (result && result.code === 200) {
         successShown = true;
-        trackLead();
+        void window.trackTikTokLead(formData);
         openSuccessModal();
         return;
       }
